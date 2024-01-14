@@ -1,0 +1,69 @@
+<main class="main">
+    <h1 class="h1">CREAR CUENTA</h1>
+    <form class="form" [formGroup]="registerForm" (submit)="register()">
+        <div class="form-box">
+            <label class="form-label" for="name">Nombre</label>
+            <input id="name" class="form-input" type="text" formControlName="name" placeholder="Tu nombre">
+            <span class="form-error" *ngIf="validate('name', 'required')">Campo obligatorio</span>
+            <span class="form-error" *ngIf="validate('name', 'maxlength')">Máximo 30 caracteres</span>
+        </div>
+
+        <div class="form-box">
+            <label class="form-label" for="lastname">Apellido</label>
+            <input id="lastname" class="form-input" type="text" formControlName="lastname" placeholder="Tu apellido">
+            <span class="form-error" *ngIf="validate('lastname', 'required')">Campo obligatorio</span>
+            <span class="form-error" *ngIf="validate('lastname', 'maxlength')">Máximo 30 caracteres</span>
+        </div>
+
+        <div class="form-box">
+            <label class="form-label" for="email">Correo electrónico</label>
+            <input id="email" class="form-input" type="email" formControlName="email"
+                placeholder="Tu correo electrónico">
+            <span class="form-error" *ngIf="validate('email', 'required')">Campo obligatorio</span>
+            <span class="form-error" *ngIf="validate('email', 'email')">Fomato inválido</span>
+            <span class="form-error" *ngIf="isUser">Otro usuario se registró con este correo</span>
+        </div>
+
+        <div class="form-row">
+            <div class="form-box">
+                <label class="form-label" for="password">Contraseña</label>
+                <input id="password" class="form-input" type="password" formControlName="password"
+                    placeholder="Tu contraseña">
+                <span class="form-error" *ngIf="validate('password', 'required')">Campo obligatorio</span>
+                <span class="form-error" *ngIf="validate('password', 'minlength')">Mínimo 6 caracteres</span>
+            </div>
+
+            <div class="form-box">
+                <label class="form-label" for="repassword">Confirmar</label>
+                <input id="repassword" class="form-input" type="password" formControlName="repassword"
+                    placeholder="Confirma tu contraseña">
+                <span class="form-error" *ngIf="validate('repassword', 'required')">Campo obligatorio</span>
+                <span class="form-error" *ngIf="validateRepassword()">Las contraseñas no coinciden</span>
+            </div>
+        </div>
+
+        <div class="form-accept-terms">
+            <label class="form-message" for="accept-terms">Acepto los
+                <a [routerLink]="'/register/terms'" target="_blank">términos y condiciones de uso</a>
+            </label>
+            <input id="accept-terms" type="checkbox" formControlName="terms">
+            <span class="form-error" *ngIf="validateTerms() || checkTerms">Campo obligatorio</span>
+        </div>
+
+        <div class="form-box-register">
+            <input class="button" type="submit" value="REGISTRARSE">
+            <div class="form-message">
+                <p>¿Ya es usuario?</p>
+                <a [routerLink]="['/login/log']" (click)="scrollToTop()">Click aquí</a>
+            </div>
+        </div>
+
+        <ng-container *ngIf="dataLoaded; else loading"></ng-container>
+    </form>
+
+    <ng-template #loading>
+        <div class="loading">
+            <img class="spinner" src="../../../../assets/img/spinner.svg" alt="Loading spinner">
+        </div>
+    </ng-template>
+</main>

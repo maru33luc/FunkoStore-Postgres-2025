@@ -1,0 +1,37 @@
+<main class="shop-main">
+    <ul class="shop-main-items">
+        <li *ngFor="let item of paginatedItems">
+            <article class="shop-main-item">
+                <a [routerLink]="'/shop/'+ item.id">
+                    <picture class="item-cover">
+                        <span class="item-tag">NUEVO</span>
+                        <img class="item-img-front" [src]="item.front_image" alt="Figura coleccionable Funko">
+                        <img class="item-img-back" [src]="item.back_image" alt="Figura coleccionable Funko">
+                    </picture>
+                    <div class="item-info">
+                        <p class="item-name">{{item.name}}</p>
+                        <p class="item-serie">{{item.serie}}</p>
+                        <p class="item-license">{{item.licence}}</p>
+                        <p class="item-price">${{item.price.toLocaleString('es', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: true})}}</p>
+                    </div>
+                </a>
+            </article>
+        </li>
+    </ul>
+
+    <div class="pagination" *ngIf="showPagination">
+        <ul class="pagination-list">
+            <li id="pagination-previous-page" [class.disabled]="currentPage === 0"
+                (click)="changePage(currentPage - 1)">
+                «
+            </li>
+            <li class="pagination-page-link" *ngFor="let _ of pages; let i = index" [class.active]="i === currentPage"
+                (click)="changePage(i)">{{ i + 1 }}
+            </li>
+            <li id="pagination-next-page" [class.disabled]="currentPage === pages.length - 1"
+                (click)="changePage(currentPage + 1)">
+                »
+            </li>
+        </ul>
+    </div>
+</main>

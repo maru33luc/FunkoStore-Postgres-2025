@@ -1,0 +1,217 @@
+.collection {
+    position: relative;
+    font-family: var(--alternative-font);
+    color: var(--ligth-font);
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    padding: 6rem 0;
+}
+
+@media screen and (min-width: 768px) {
+    .collection {
+        height: 100vh;
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .collection:nth-of-type(1) .collection-picture {
+        order: -1;
+    }
+
+    .collection:nth-of-type(3) .collection-picture {
+        order: -1;
+    }
+}
+
+.collection:nth-of-type(1)::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(../../../../assets/img/collection-lord-of-the-rings.png);
+    background-size: cover;
+    background-position: center;
+}
+
+.collection:nth-of-type(1)::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(../../../../assets/img/collection-lord-of-the-rings.png);
+    background-size: cover;
+    background-position: center;
+    filter: blur(.2rem);
+    z-index: -1;
+}
+
+.collection:nth-of-type(2)::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(../../../../assets/img/collection-star-wars.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+.collection:nth-of-type(2)::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(../../../../assets/img/collection-star-wars.jpg);
+    background-size: cover;
+    background-position: center;
+    filter: blur(.2rem);
+    z-index: -1;
+}
+
+.collection:nth-of-type(3)::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(../../../../assets/img/collection-pokemon.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+.collection:nth-of-type(3)::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(../../../../assets/img/collection-pokemon.jpg);
+    background-size: cover;
+    background-position: center;
+    filter: blur(.2rem);
+    z-index: -1;
+}
+
+.collection:nth-of-type(4)::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(../../../../assets/img/collection-harry-potter.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+.collection:nth-of-type(4)::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(../../../../assets/img/collection-harry-potter.jpg);
+    background-size: cover;
+    background-position: center;
+    filter: blur(.2rem);
+    z-index: -1;
+}
+
+.collection-content {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+@media screen and (min-width: 768px) {
+    .collection-content {
+        width: calc(50vw - 8rem);
+        margin-left: 4rem;
+    }
+}
+
+.collection-title {
+    font-size: var(--font-large);
+    font-weight: 1000;
+    text-align: center;
+    padding: 2rem;
+}
+
+@media screen and (min-width: 768px) {
+    .collection-title {
+        font-size: var(--font-xlarge);
+    }
+}
+
+.collection-text {
+    font-size: var(--font-medium);
+    font-weight: 500;
+    text-align: center;
+    padding: 2rem;
+}
+
+@media screen and (min-width: 768px) {
+    .collection-text {
+        font-size: var(--font-large);
+    }
+}
+
+.collection-btn {
+    display: block;
+    background-color: var(--primary);
+    font-size: var(--font-medium);
+    transition: background .2s ease-in-out;
+    transition: transform .2s ease-in-out;
+    margin-top: 1rem;
+    padding: 1rem 3rem;
+    border: none;
+    border-radius: 2.5rem;
+    cursor: pointer;
+}
+
+@media screen and (min-width: 768px) {
+    .collection-btn {
+        font-size: var(--font-large);
+        padding: 2rem 5rem;
+    }
+}
+
+.collection-btn:hover {
+    background-color: var(--secondary);
+    transform: scale(1.05);
+}
+
+.collection-picture {
+    width: 100vw;
+    height: 50vh;
+}
+
+@media screen and (min-width: 576px) {
+    .collection-picture {
+        height: 75vh;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .collection-picture {
+        width: 50vw;
+    }
+}
+
+.collection-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

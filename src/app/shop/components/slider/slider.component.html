@@ -1,0 +1,26 @@
+<section class="main slider-container">
+    <h2 class="h2 slider-title">{{title}}</h2>
+    <ul class="slider-items">
+        <li class="slider-item" *ngFor="let item of pagedItems">
+            <a [routerLink]="'/shop/'+ item.id">
+                <picture class="item-cover">
+                    <span class="item-tag">NUEVO</span>
+                    <img class="item-img-front" [src]="item.front_image" alt="Figura coleccionable Funko">
+                    <img class="item-img-back" [src]="item.back_image" alt="Figura coleccionable Funko en caja">
+                </picture>
+
+                <div class="item-info">
+                    <h3 class="item-name">{{item.name}}</h3>
+                    <p class="item-serie">{{item.serie}}</p>
+                    <p class="item-license">{{item.licence}}</p>
+                    <p class="item-price">${{item.price.toLocaleString('es', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: true})}}</p>
+                </div>
+            </a>
+        </li>
+    </ul>
+
+    <div class="slider-nav">
+        <button class="button" (click)="changePage(currentPage - 1)">ANTERIOR</button>
+        <button class="button" (click)="changePage(currentPage + 1)">SIGUIENTE</button>
+    </div>
+</section>

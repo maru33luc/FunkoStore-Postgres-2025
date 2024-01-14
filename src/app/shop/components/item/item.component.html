@@ -1,0 +1,104 @@
+<main class="main item-container">
+    <article class="item">
+        <picture class="item-picture ">
+            <img class="item-img-front" src="{{selectedItem?.front_image}}">
+            <img class="item-img-back" src="{{selectedItem?.back_image}}">
+        </picture>
+
+        <section class="item-info">
+            <h3 class="item-name">{{selectedItem?.name}}</h3>
+            <p class="item-serie">{{selectedItem?.serie}}</p>
+            <p class="item-license">{{selectedItem?.licence}} </p>
+            <p class="item-price">${{selectedItem?.price?.toLocaleString('es', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: true})}}</p>
+            <div class="item-cart">
+                <div class="item-cart-quantity">
+                    <button class="button item-cart-quantity-btn" id="subtract" #subtractButton>-</button>
+                    <input class="item-input" type="text" id="quantity" #quantityButton value="0" disabled>
+                    <button class="button item-cart-quantity-btn" id="add" #addButton>+</button>
+                    <p class="item-stock">Disponibles: {{stock}}</p>
+                </div>
+                <button class="button" (click)="addToCart()">AGREGAR</button>
+            </div>
+        </section>
+
+        <section class="item-info-extra" *ngIf="selectedItemLicence=='The Lord of the Rings'">
+            <h4 class="item-info-extra-title">INFORMACIÓN ADICIONAL</h4>
+            <ng-container *ngIf="dataLoaded; else loading">
+            <p>Raza: {{ characterInfo?.race? characterInfo?.race : 'desconocido'}}</p>
+            <p>Compañero/a: {{ characterInfo?.spouse? characterInfo?.spouse : 'desconocido'}}</p>
+            <p>Link Wiki:
+                <ng-container *ngIf="characterInfo?.wikiUrl">
+                    <a href="{{ characterInfo?.wikiUrl }}" target="_blank">{{ characterInfo?.wikiUrl }}</a>
+                </ng-container>
+                <ng-container *ngIf="!characterInfo?.wikiUrl">desconocido</ng-container>
+            </p>
+            <p>Nacimiento: {{ characterInfo?.birth? characterInfo?.birth : 'desconocido'}}</p>
+            <p>Muerte: {{ characterInfo?.death? characterInfo?.death : 'desconocido'}}</p>
+            </ng-container>
+            <ng-template #loading>
+                <img class="spinner" src="../../../../assets/img/spinner.svg"
+                    alt="Loading spinner">
+            </ng-template>
+        </section>
+
+        <section class="item-info-extra harry-potter-info" *ngIf="selectedItemLicence=='Harry Potter'">
+            <h4 class="item-info-extra-title">INFORMACIÓN ADICIONAL</h4>
+            <ng-container *ngIf="dataLoaded; else loading">
+                <div>
+                    <p>Especie: {{characterInfoPotter?.species? characterInfoPotter?.species : 'desconocido' }}</p>
+                    <p>Casa: {{characterInfoPotter?.house? characterInfoPotter?.house : 'desconocido' }}</p>
+                    <p>Nacimiento: {{characterInfoPotter?.dateOfBirth? characterInfoPotter?.dateOfBirth : 'desconocido'
+                        }}
+                    </p>
+                    <p>Ancestros: {{characterInfoPotter?.ancestry? characterInfoPotter?.ancestry : 'desconocido' }}</p>
+                    <p>Patrono: {{characterInfoPotter?.patronus? characterInfoPotter?.patronus : 'desconocido'}}</p>
+                    <p>Madera de Varita: {{characterInfoPotter?.wand?.wood? characterInfoPotter?.wand?.wood :
+                        'desconocido'
+                        }}</p>
+                    <p>Núcleo de Varita: {{characterInfoPotter?.wand?.core? characterInfoPotter?.wand?.core :
+                        'desconocido'
+                        }}</p>
+                </div>
+                <img src="{{characterInfoPotter?.image}}"
+                    *ngIf="characterInfoPotter?.image!=undefined && characterInfoPotter?.image!=''">
+            </ng-container>
+            <ng-template #loading>
+                <img class="spinner" src="../../../../assets/img/spinner.svg"
+                    alt="Loading Spinner">
+            </ng-template>
+        </section>
+
+        <section class="item-info-extra star-wars-info" *ngIf="selectedItemLicence=='Star Wars'">
+            <h4 class="item-info-extra-title">INFORMACIÓN ADICIONAL</h4>
+            <ng-container *ngIf="dataLoaded; else loading">
+                <p>Nombre: {{characterInfoStarWars?.name? characterInfoStarWars?.name : 'desconocido' }}</p>
+                <p>Descripción: {{characterInfoStarWars?.description? characterInfoStarWars?.description : 'desconocido'
+                    }}</p>
+                <img src="{{characterInfoStarWars?.image}}" *ngIf="characterInfoStarWars?.image != undefined">
+            </ng-container>
+
+            <ng-template #loading>
+                <img class="spinner" src="../../../../assets/img/spinner.svg"
+                    alt="Loading Spinner">
+            </ng-template>
+        </section>
+
+        <section class="item-info-extra pokemon-info" *ngIf="selectedItemLicence=='Pokemon'">
+            <h4 class="item-info-extra-title">INFORMACIÓN ADICIONAL</h4>
+            <ng-container *ngIf="dataLoaded; else loading">
+            <p><strong>Nombre:</strong> {{characterInfoPokemon?.name? characterInfoPokemon?.name : 'desconocido' }} </p>
+            <p><strong>Descripción:</strong> {{characterInfoPokemon?.description? characterInfoPokemon?.description :
+                'desconocido' }} </p>
+            <p><strong>Tipo:</strong> {{characterInfoPokemon?.type? characterInfoPokemon?.type : 'desconocido' }} </p>
+            <p><strong>Altura:</strong> {{characterInfoPokemon?.height? characterInfoPokemon?.height : 'desconocido' }}
+            </p>
+            <p><strong>Peso:</strong> {{characterInfoPokemon?.weight? characterInfoPokemon?.weight : 'desconocido' }}
+            </p>
+            </ng-container>
+            <ng-template #loading>
+                <img class="spinner" src="../../../../assets/img/spinner.svg"
+                    alt="Loading Spinner">
+            </ng-template>
+        </section>
+    </article>
+</main>

@@ -1,0 +1,6 @@
+@media screen and (min-width: 576px) {
+    .admin-form {
+        width: 75%;
+        margin: 0 auto;
+    }
+}

@@ -1,0 +1,62 @@
+<main class="main cart-main">
+    <h1 class="h1">CARRITO DE COMPRAS</h1>
+
+    <ul class="cart-items">
+        <li class="cart-item" *ngFor="let item of cartItemsCopy">
+            <div class="cart-item-info">
+                <picture class="cart-item-picture">
+                    <img [src]="item.front_image" alt="{{item.name}}">
+                </picture>
+
+                <article class="cart-item-content">
+                    <p class="cart-item-name">{{item.name}}</p>
+                    <p class="cart-item-serie">{{item.serie}}</p>
+                    <p class="cart-item-license">{{item.licence}}</p>
+                </article>
+            </div>
+
+            <div class="item-cart-quantity">
+                <button class="button item-cart-quantity-btn" id="subtract" (click)="decreaseQuantity(item)">-</button>
+                <input class="item-input" type="text" id="quantity" #quantityButton [value]="item.quantity" placeholder="1">
+                <button class="button item-cart-quantity-btn" id="add" (click)="increaseQuantity(item)">+</button>
+                <p class="item-stock">Disponibles: {{ item.stock}}</p>
+            </div>
+
+            <div class="cart-total-price">
+                <p>${{calculateTotalPrice(item).toLocaleString('es', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: true})}}</p>
+            </div>
+
+            <div>
+                <img class="cart-item-delete" src="../../../../assets/img/close-icon.svg"
+                    (click)="removeItem(item)">
+            </div>
+        </li>
+    </ul>
+
+    <section class="cart-resumen">
+        <h2 class="cart-resumen-title">RESUMEN</h2>
+        <article class="cart-resumen-container">
+            <div class="cart-resumen-line">
+                <p>PRODUCTOS</p>
+                <p>{{ totalQuantity | async }}</p>
+            </div>
+
+            <div class="cart-resumen-line">
+                <p>SUBTOTAL</p>
+                <p>${{ totalPrice | async }}</p>
+            </div>
+
+            <div class="cart-resumen-line">
+                <p>ENVÍO</p>
+                <p>$0,00</p>
+            </div>
+
+            <div class="cart-resumen-line">
+                <p>TOTAL</p>
+                <p>${{ totalPrice | async }}</p>
+            </div>
+        </article>
+
+        <a class="button cart-pay-btn" href="./checkout.html">PAGAR</a>
+    </section>
+</main>

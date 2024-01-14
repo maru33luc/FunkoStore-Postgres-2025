@@ -1,0 +1,12 @@
+.shop-container {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+}
+
+@media screen and (min-width: 576px) {
+    .shop-container {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}

@@ -1,0 +1,32 @@
+.form-accept-terms {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    gap: 2rem;
+}
+
+@media screen and (min-width: 576px) {
+    .form-accept-terms {
+        flex-direction: row;
+    }
+}
+
+.form-accept-terms label {
+    text-align: justify;
+}
+
+.form-box-register {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+}
+
+@media screen and (min-width: 768px) {
+    .form-box-register {
+        flex-direction: row-reverse;
+        justify-content: space-between;
+    }
+}

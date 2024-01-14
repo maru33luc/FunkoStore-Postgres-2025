@@ -1,0 +1,66 @@
+.contact-container {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 5rem;
+}
+
+@media screen and (min-width: 1200px) {
+    .contact-container {
+        flex-direction: row;
+    }
+}
+
+.contact-links {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.contact-links {
+    font-size: var(--font-small);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media screen and (min-width: 1200px) {
+    .contact-links {
+        align-items: flex-start;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .contact-links {
+        position: absolute;
+    }
+}
+
+.contact-link {
+    display: inline-block;
+}
+
+.contact-link svg {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 2rem;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+}
+
+@media screen and (min-width: 992px) {
+    .contact-form {
+        width: 60vw;
+        margin: 0 auto;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .contact-form {
+        width: 40vw;
+    }
+}

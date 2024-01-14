@@ -1,0 +1,85 @@
+<form class="form admin-form" [formGroup]="formAdmin" (submit)="sendData()">
+    <div class="form-row">
+        <div class="form-box">
+            <label class="form-label" for="name">Nombre</label>
+            <input id="name" class="form-input" type="text" formControlName="name" placeholder="Nombre del producto">
+            <span class="form-error" *ngIf="validate('name', 'required')">Campo obligatorio</span>
+        </div>
+
+        <div class="form-box">
+            <label class="form-label" for="serie">Serie</label>
+            <input id="serie" class="form-input" type="text" formControlName="serie" placeholder="Serie del producto">
+            <span class="form-error" *ngIf="validate('serie', 'required')">Campo obligatorio</span>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-box">
+            <label class="form-label" for="category">Categoría</label>
+            <select id="category" class="form-input" formControlName="category">
+                <option value="" disabled selected>Categoría del producto</option>
+                <option value="Keychain">Keychain</option>
+                <option value="Minis">Minis</option>
+                <option value="Plushies">Plushies</option>
+                <option value="Pop! Vynil">Pop! Vinyl</option>
+            </select>
+            <span class="form-error" *ngIf="validate('category', 'required')">Campo obligatorio</span>
+        </div>
+
+        <div class="form-box">
+            <label class="form-label" for="licence">Licencia</label>
+            <select id="licence" class="form-input" formControlName="licence" >
+                <option value="" disabled selected>Licencia del producto</option>
+                <option value="El Señor de los Anillos">El Señor de los Anillos</option>
+                <option value="Starwars">Starwars</option>
+                <option value="Harry Potter">Harry Potter</option>
+            </select>
+            <span class="form-error" *ngIf="validate('licence', 'required')">Campo obligatorio</span>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-box">
+            <label class="form-label" for="price">Precio</label>
+            <input id="price" class="form-input" type="number" formControlName="price" min="0">
+            <span class="form-error" *ngIf="validate('price', 'required')">Campo obligatorio</span>
+            <span class="form-error" *ngIf="validate('price', 'min')">Precio inválido</span>
+        </div>
+
+        <div class="form-box">
+            <label class="form-label" for="stock">Stock</label>
+            <input id="stock" class="form-input" type="number" formControlName="stock" min="0">
+            <span class="form-error" *ngIf="validate('stock', 'required')">Campo obligatorio</span>
+            <span class="form-error" *ngIf="validate('stock', 'min')">Stock inválido</span>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-box">
+            <label class="form-label" for="front_image">Imagen delantera</label>
+            <input id="front_image" class="form-input" type="text" formControlName="front_image" placeholder="URL imagen delantera">
+            <span class="form-error" *ngIf="validate('front_image', 'required')">Campo obligatorio</span>
+            <span class="form-error" *ngIf="validate('front_image', 'pattern')">Formato inválido</span>
+        </div>
+
+        <div class="form-box">
+            <label class="form-label" for="back_image">Imagen trasera</label>
+            <input id="back_image" class="form-input" type="text" formControlName="back_image" placeholder="URL imagen trasera">
+            <span class="form-error" *ngIf="validate('back_image', 'required')">Campo obligatorio</span>
+            <span class="form-error" *ngIf="validate('back_image', 'pattern')">Formato inválido</span>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-box">
+            <label class="form-label form-label-textarea" for="description">Descripción</label>
+            <textarea id="description" class="form-textarea" rows="10" formControlName="description" placeholder="Descripción del producto"></textarea>
+            <span class="form-error" *ngIf="validate('description', 'required')">Campo obligatorio</span>
+        </div>
+    </div>
+
+    <div class="form-box-btn">
+        <input class="button" type="submit" value="GUARDAR">
+        <input class="button" type="reset" value="LIMPIAR">
+    </div>
+</form>

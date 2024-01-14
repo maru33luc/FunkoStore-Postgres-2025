@@ -1,0 +1,44 @@
+.about-us-container {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 5rem;
+}
+
+@media screen and (min-width: 1200px) {
+    .about-us-container {
+        flex-direction: row;
+    }
+}
+
+.about-us-text {
+    font-size: var(--font-small);
+    text-align: justify;
+    line-height: 1.5;
+}
+
+@media screen and (min-width: 768px) {
+    .about-us-text {
+        font-size: var(--font-medium);
+    }
+}
+
+.about-us-text p {
+    margin-bottom: 1rem;
+}
+
+.about-us-picture {
+    align-self: center;
+}
+
+@media screen and (min-width: 1200px) {
+    .about-us-picture {
+        min-width: 20vw;
+        align-self: flex-start;
+    }
+}
+
+.about-us-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

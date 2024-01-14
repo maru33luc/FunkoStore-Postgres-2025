@@ -1,0 +1,7 @@
+<main class="main">
+    <h1 class="h1">EDITAR PRODUCTO</h1>
+    <app-admin-form [name]="name" [description]="description" [category]="category" [serie]="serie"
+        [price]="price" [front_image]="front_image" [back_image]="back_image" 
+        [licence]="licence" [stock]="stock"
+        (sendFunko)="saveFunko($event)"></app-admin-form>
+</main>
