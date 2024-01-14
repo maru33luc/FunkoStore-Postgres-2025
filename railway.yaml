@@ -1,0 +1,8 @@
+version: 3
+services:
+  - name: backend
+    type: node
+    template: node
+  - name: frontend
+    type: angular
+    template: angular
