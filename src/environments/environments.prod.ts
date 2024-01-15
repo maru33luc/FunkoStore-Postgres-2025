@@ -1,6 +1,6 @@
-// const domain = 'https://copia-deploy-funkostoreutn-production.up.railway.app/';
+const domain = 'https://copia-deploy-funkostoreutn-production.up.railway.app/';
 // const domain = 'http://localhost:3000/';
-const domain = 'https://funkostore.onrender.com/';
+// const domain = 'https://funkostore.onrender.com/';
 
 export const environments = {
     urlFunkosData: domain + 'fk',

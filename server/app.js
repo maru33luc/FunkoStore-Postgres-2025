@@ -20,7 +20,8 @@ app.use(express.static(__dirname + '/dist/funko-store'));
 
 // Configuración básica de CORS permitiendo solicitudes desde http://localhost:4200
 app.use(cors({
-    origin: 'http://localhost:4200',
+    // origin: 'http://localhost:4200',
+    "origin": "*",
     credentials: true
   }));
 
