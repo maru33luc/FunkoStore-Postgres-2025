@@ -12,8 +12,18 @@ Bienvenido a Funko Store Online, una tienda online de Funkos con una interfaz at
    ```bash
    npm install
 
+2. **Configuración de las variables de entorno**
+   Cree un archivo .env en la raíz del proyecto y agregue la siguiente variable de entorno:
+
+   ```bash
+   DB_NAME=nombre_de_la_base_de_datos
+   DB_USER=usuario_de_la_base_de_datos
+   DB_PASSWORD=contraseña_de_la_base_de_datos
+   DB_HOST=nombre_del_host_de_la_base_de_datos
+   DB_PORT=puerto_de_la_base_de_datos
+
 2. **Configuracion de la base de datos**
-   En el archivo /server/data/db.js modifique los campos de user, password y database con los datos de su base de datos MySQL.  
+   En el archivo /server/data/db.js modifique los campos de dialect y schema si corresponde, segun su base de datos.
 
 3. **Iniciar el Servidor Front End**
     Inicie el servidor de desarrollo ejecutando:
