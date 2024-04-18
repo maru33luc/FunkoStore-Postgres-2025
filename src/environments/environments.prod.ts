@@ -11,5 +11,6 @@ export const environments = {
     urlAPIStarWars: 'https://starwars-databank-server.vercel.app/api/v1',
     urlAPIPotter: 'https://potterhead-api.vercel.app',
     urlPokemonJson: '',
-    urlFormsPree: 'https://formspree.io/f/xknlabrk'
+    urlFormsPree: 'https://formspree.io/f/xknlabrk',
+    
 }
