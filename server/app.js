@@ -11,6 +11,9 @@ app.use(cors({
     credentials: true
   }));
 
+  app.options('*', cors()); // Permite preflight requests para todas las rutas
+
+
 const db = require('./data/db');
 const funkoRoutes = require('./src/routes/funkoRoutes');
 const usersRoutes = require('./src/routes/usersRoutes');
