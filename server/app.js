@@ -19,12 +19,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Servir archivos estáticos desde la carpeta 'dist', en la raíz del sitio
-app.use(express.static(__dirname + '/dist/funko-store'));
+app.use(express.static(path.join(__dirname, 'dist', 'funko-store')));
 
 // Asegurarse de que todas las rutas que no sean de la API redirijan a 'index.html'
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/funko-store', 'index.html'));
+  res.sendFile(path.join(__dirname, 'dist', 'funko-store', 'index.html'));
 });
+
 
 const conexionDB = async () => {
   try {
