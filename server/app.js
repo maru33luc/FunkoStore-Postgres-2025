@@ -5,6 +5,12 @@ const cors = require('cors');
 // const session = require('express-session');
 // const cookieParser = require('cookie-parser');
 
+app.use(cors({
+  origin: ['http://localhost:4200', 'https://funkostore-postgres-2025.onrender.com','https://funko-store-seven.vercel.app'],
+    // "origin": "*",
+    credentials: true
+  }));
+
 const db = require('./data/db');
 const funkoRoutes = require('./src/routes/funkoRoutes');
 const usersRoutes = require('./src/routes/usersRoutes');
@@ -23,11 +29,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/funko-store', 'index.html'));
 });
 
-app.use(cors({
-  origin: ['http://localhost:4200', 'https://funkostore-postgres-2025.onrender.com','https://funko-store-seven.vercel.app'],
-    // "origin": "*",
-    credentials: true
-  }));
+
 
 // const secretKey = crypto.randomBytes(32).toString('hex');
 // const secretKey = 'secretKey';
