@@ -56,7 +56,7 @@ module.exports = {
         allowNull: false,
       },
       serie: {
-        type: Sequelize.STRING(50),
+        type: Sequelize.STRING(150),
         allowNull: false,
       },
       category: {
