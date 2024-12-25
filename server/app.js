@@ -28,9 +28,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/dist/funko-store'));
 
 // Asegurarse de que todas las rutas que no sean de la API redirijan a 'index.html'
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/funko-store', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'dist/funko-store', 'index.html'));
+// });
 
 
 
