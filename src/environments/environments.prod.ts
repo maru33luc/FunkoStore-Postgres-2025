@@ -1,4 +1,4 @@
-const domain = 'https://funkostore.onrender.com/';
+const domain = 'https://funkostore-postgres-2025.onrender.com/';
 // const domain = 'http://localhost:3000/';
 // const domain = 'https://funkostore.onrender.com/';
 
