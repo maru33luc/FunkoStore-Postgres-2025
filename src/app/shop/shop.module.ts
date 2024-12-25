@@ -8,7 +8,6 @@ import { CartComponent } from './components/cart/cart.component';
 import { ShopPageComponent } from './pages/shop-page/shop-page.component';
 import { ItemPageComponent } from './pages/item-page/item-page.component';
 import { CartPageComponent } from './pages/cart-page/cart-page.component';
-
 import { CommonModule } from '@angular/common';
 import { ShopRoutingModule } from './shop-routing.module';
 import { SharedModule } from '../shared/shared.module';
@@ -28,7 +27,7 @@ import { FormsModule } from '@angular/forms';
         CommonModule,
         ShopRoutingModule,
         SharedModule,
-        FormsModule,
+        FormsModule
     ],
     exports: [
         SliderComponent,
