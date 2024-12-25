@@ -10,9 +10,9 @@ if (env.NODE_ENV !== 'production') {
 
 
 const db = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD,  {
-        host: 'localhost',
+        host: env.DB_HOST,
         dialect: 'postgres',
-        port: 5432,
+        port: env.DB_PORT || 5432,
         schema: 'public'
 
     });
