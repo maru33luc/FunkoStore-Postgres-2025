@@ -3,7 +3,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const cors = require('cors');
 // const session = require('express-session');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 
 const db = require('./data/db');
 const funkoRoutes = require('./src/routes/funkoRoutes');
@@ -13,7 +13,7 @@ const cartRoutes = require('./src/routes/cartRoutes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+// app.use(cookieParser());
 
 // Servir archivos estáticos desde la carpeta 'dist', en la raíz del sitio
 // app.use(express.static(__dirname + '/dist/funko-store'));
