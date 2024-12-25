@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const { env, loadEnvFile} = require ('node:process')
-process.loadEnvFile("./.env")
+if (env.NODE_ENV !== 'production') {
+  process.loadEnvFile("./.env")
+}
 
 const secretKey = env.JWT_SECRET || 'your_secret_key'; // Asegúrate de que coincida con el que usaste para firmar el token
 
@@ -20,4 +22,4 @@ const verifyToken = (req, res, next) => {
     });
 };
 
-module.exports = verifyToken; 
+module.exports = verifyToken;

@@ -2,7 +2,9 @@
 const jwt = require('jsonwebtoken');
 const userServices = require('../services/userServices');
 const { env, loadEnvFile} = require ('node:process')
-process.loadEnvFile("./.env")
+if (env.NODE_ENV !== 'production') {
+  process.loadEnvFile("./.env")
+}
 
 
 const secretKey = env.JWT_SECRET || 'your_secret_key';
