@@ -27,10 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 // Servir archivos estáticos desde la carpeta 'dist', en la raíz del sitio
 app.use(express.static(__dirname + '/dist/funko-store'));
 
-// Asegurarse de que todas las rutas que no sean de la API redirijan a 'index.html'
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'dist/funko-store', 'index.html'));
-// });
+
 
 
 
@@ -62,6 +59,12 @@ app.use ('/users', usersRoutes);
 app.use ('/carts', cartRoutes);
 
 // Ruta de fallback para manejar rutas Angular (evitar errores 404 al recargar la página)
-app.get('/*', (req, res) => {
-    res.sendFile(__dirname + '/dist/funko-store/index.html');
+// app.get('/*', (req, res) => {
+//     res.sendFile(__dirname + '/dist/funko-store/index.html');
+// });
+
+
+// Asegurarse de que todas las rutas que no sean de la API redirijan a 'index.html'
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist/funko-store', 'index.html'));
 });
