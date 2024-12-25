@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(cookieParser());
 
 // Servir archivos estáticos desde la carpeta 'dist', en la raíz del sitio
-// app.use(express.static(__dirname + '/dist/funko-store'));
+app.use(express.static(__dirname + '/dist/funko-store'));
 
 // Configuración básica de CORS permitiendo solicitudes desde http://localhost:4200
 app.use(cors({
