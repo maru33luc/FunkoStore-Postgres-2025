@@ -18,9 +18,13 @@ app.use(express.urlencoded({ extended: true }));
 // Servir archivos estáticos desde la carpeta 'dist', en la raíz del sitio
 app.use(express.static(__dirname + '/dist/funko-store'));
 
-// Configuración básica de CORS permitiendo solicitudes desde http://localhost:4200
+// Asegurarse de que todas las rutas que no sean de la API redirijan a 'index.html'
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist/funko-store', 'index.html'));
+});
+
 app.use(cors({
-    origin: 'http://localhost:4200',
+  origin: ['http://localhost:4200', 'https://funkostore-postgres-2025.onrender.com'],
     // "origin": "*",
     credentials: true
   }));
