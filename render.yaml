@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: funkostore-api
+    env: node
+    buildCommand: 'npm install'
+    startCommand: 'npm start'
+    autoDeploy: true
+    branch: main
+    instanceType: free
+    regions:
+      - oregon
+    envVars:
+      - key: DATABASE_URL
+        value: <tu_url_de_base_de_datos> 
+      - key: PORT
+        value: 3000
