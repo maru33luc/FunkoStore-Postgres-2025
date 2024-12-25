@@ -8,7 +8,8 @@ const cors = require('cors');
 
 // Configurar CORS
 app.use(cors({
-  origin: ['http://localhost:4200', 'https://funkostore-postgres-2025.onrender.com','https://funko-store-seven.vercel.app'],
+  // origin: ['http://localhost:4200', 'https://funkostore-postgres-2025.onrender.com','https://funko-store-seven.vercel.app'],
+  origin: '*',
   credentials: true
 }));
 

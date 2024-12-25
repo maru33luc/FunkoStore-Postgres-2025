@@ -1,8 +1,19 @@
-version: 3
 services:
-  - name: backend
-    type: node
-    template: node
-  - name: frontend
-    type: angular
-    template: angular
+  - type: web
+    name: funkostore-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: HOSTNAME
+        value: "dpg-ctlhqtqj1k6c73d13iqg-a"
+      - key: PORT
+        value: "5432"
+      - key: DATABASE
+        value: "funkostoredb"
+      - key: USERNAME
+        value: "funkostoredb_user"
+      - key: PASSWORD
+        value: "0lRDjAZOLuhMR2vEaJEwYpr2XQqXbvc9"
+    autoDeploy: true
+    region: oregon  # Puedes elegir otra región si lo deseas
