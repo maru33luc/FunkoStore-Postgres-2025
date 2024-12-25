@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const cors = require('cors');
-const session = require('express-session');
+// const session = require('express-session');
 const cookieParser = require('cookie-parser');
 
 const db = require('./data/db');
@@ -26,13 +26,13 @@ app.use(cors({
   }));
 
 // const secretKey = crypto.randomBytes(32).toString('hex');
-const secretKey = 'secretKey';
+// const secretKey = 'secretKey';
 
-app.use(session({
-    secret : secretKey,
-    resave : false,
-    saveUninitialized : false,
-}));
+// app.use(session({
+//     secret : secretKey,
+//     resave : false,
+//     saveUninitialized : false,
+// }));
 
 const conexionDB = async ()=> {
     try{

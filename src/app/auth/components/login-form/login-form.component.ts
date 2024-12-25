@@ -14,15 +14,15 @@ export class LoginFormComponent implements OnInit {
     dataLoaded: boolean = true;
 
     loginForm: FormGroup = this.fb.group({
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(6)]]
+        email: ['admin@gmail.com', [Validators.required, Validators.email]],
+        password: ['123456', [Validators.required, Validators.minLength(6)]],
     });
 
     constructor(
         private router: Router,
         private fb: FormBuilder,
         private loginService: LoginService
-    ) { }
+    ) {}
 
     ngOnInit() {
         this.loginForm.get('email')?.valueChanges.subscribe((valor) => {
@@ -36,7 +36,8 @@ export class LoginFormComponent implements OnInit {
     validate(field: string, error: string): boolean {
         return (
             this.loginForm.controls[field].getError(error) &&
-            this.loginForm.controls[field].touched);
+            this.loginForm.controls[field].touched
+        );
     }
 
     async login() {
@@ -49,21 +50,27 @@ export class LoginFormComponent implements OnInit {
                     this.loginForm.value.email,
                     this.loginForm.value.password
                 );
-                if(res){
+                if (res) {
                     this.isCorrect = true;
                     this.dataLoaded = true;
-                if (await this.loginService.isUserLoggedIn()) {
-                    if (this.loginService.isAdmin()) {
-                        this.router.navigateByUrl('/admin');
-                    } else {
-                        this.router.navigateByUrl('/home');
+
+                    if (await this.loginService.isUserLoggedIn()) {
+                        const user =
+                            await this.loginService.getDataActualUser();
+
+                        if (user) {
+                            if (user.isAdmin === true) {
+                                this.router.navigateByUrl('/admin');
+                            } else {
+                                this.router.navigateByUrl('/home');
+                            }
+                        }
+                        console.log('usuario logueado');
                     }
-                }
-                }else{
+                } else {
                     this.isCorrect = false;
                     this.dataLoaded = true;
                 }
-                
             } catch (e) {
                 this.isCorrect = false;
                 this.dataLoaded = true;
@@ -74,32 +81,33 @@ export class LoginFormComponent implements OnInit {
 
     async resetPassword() {
         const { value: mail } = await Swal.fire({
-            text: "Ingrese su correo electrónico",
-            input: "text",
+            text: 'Ingrese su correo electrónico',
+            input: 'text',
             showCancelButton: true,
-            confirmButtonText: "REESTABLECER",
-            cancelButtonText: "CANCELAR",
+            confirmButtonText: 'REESTABLECER',
+            cancelButtonText: 'CANCELAR',
             inputValidator: (value) => {
-                const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                const regex =
+                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
                 if (!value) {
-                    return "Campo obligatorio";
+                    return 'Campo obligatorio';
                 } else if (!regex.test(value)) {
-                    return "Formato inválido";
+                    return 'Formato inválido';
                 }
                 return null;
-            }
+            },
         });
         if (mail) {
             try {
                 await this.loginService.resetPassword(mail);
                 Swal.fire({
                     text: `Se ha enviado un correo a ${mail} para restablecer su contraseña`,
-                    icon: "success",
+                    icon: 'success',
                 });
             } catch (error) {
                 Swal.fire({
-                    text: "Error al restablecer la contraseña. Por favor, verifique su correo electrónico.",
-                    icon: "error",
+                    text: 'Error al restablecer la contraseña. Por favor, verifique su correo electrónico.',
+                    icon: 'error',
                 });
                 console.error(error);
             }

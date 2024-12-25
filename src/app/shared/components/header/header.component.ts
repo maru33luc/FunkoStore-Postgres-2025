@@ -30,12 +30,13 @@ export class HeaderComponent {
             }
         });
 
-        this.loginService.isAdmin().subscribe((isAdmin) => {
-            this.isAdmin = isAdmin;
-        });
+        // this.loginService.isAdmin().subscribe((isAdmin) => {
+        //     this.isAdmin = isAdmin;
+        // });
 
         this.loginService.authStateObservable()?.subscribe((user) => {
             if (user) {
+                this.isAdmin = user.isAdmin;
                 this.loginService.getUserName().then((nombre) => {
                     if (nombre) {
                         console.log('nombre: ', nombre);

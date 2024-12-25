@@ -5,10 +5,9 @@ import { environments } from 'src/environments/environments';
 import axios from 'axios';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class LoginService {
-
     private authState$: BehaviorSubject<any> | undefined;
     urlAuth = environments.urlUsersData;
 
@@ -31,14 +30,18 @@ export class LoginService {
         try {
             const response = await axios.get(this.urlAuth);
             return response.data;
-        }
-        catch (e) {
+        } catch (e) {
             console.log(e);
         }
         return undefined;
     }
 
-    async register(email: string, password: string, nombre: string, apellido: string) {
+    async register(
+        email: string,
+        password: string,
+        nombre: string,
+        apellido: string
+    ) {
         let lenght = 0;
         try {
             const users = await this.getUsers();
@@ -56,12 +59,12 @@ export class LoginService {
                     last_name: apellido,
                     email: email,
                     password: password,
-                    isAdmin: false
+                    isAdmin: false,
                 };
                 const userCredential = await axios.post(this.urlAuth, user);
                 alert('Usuario registrado con éxito');
             } catch (error) {
-                alert('No se pudo registrar el usuario')
+                alert('No se pudo registrar el usuario');
             }
         } catch (error) {
             alert('No se pudo obtener la lista de usuarios');
@@ -72,47 +75,74 @@ export class LoginService {
         try {
             const userCredential = {
                 email: email,
-                password: password
+                password: password,
+            };
+            const response = await axios.post(
+                `${this.urlAuth}/auth`,
+                userCredential
+            );
+            if(response){
+                this.storeToken(response.data.token);
+                try{
+                    const user = await axios.get(`${this.urlAuth}/auth`, {
+                        headers: {
+                            Authorization: `Bearer ${response.data.token}` // Enviar el token en el encabezado
+                        }
+                    });
+                    if(user){
+                        this.authState$?.next(user.data);
+                        return user.data;
+                    }
+                }
+                catch(e){
+                    console.log(e);
+                }
+
             }
-            const user = await axios.post(`${this.urlAuth}/auth`, userCredential, { withCredentials: true });
-            if (user) {
-                this.authState$?.next(user.data);
-                return user.data;
-            } else {
-                alert('No se pudo iniciar sesión');
-                window.location.href = '/login';
-                return null;
-            }
+
+
         } catch (e) {
-            console.log(e);
-            throw e;
+            alert('No se pudo iniciar sesión');
+            window.location.href = '/login';
+            return null;
         }
+    }
+    private storeToken(token: string): void {
+        localStorage.setItem('token', token);
+    }
+
+    getToken(): string | null {
+        return localStorage.getItem('token');
     }
 
     async logout() {
         try {
-            const res = await axios.post(`${this.urlAuth}/logout`, {}, { withCredentials: true });
-            if (res) {
-                window.location.href = '/home';
-                alert('Sesión cerrada con éxito');
-            } else {
-                alert('No se pudo cerrar sesión');
-            }
+            localStorage.removeItem('token');
+            window.location.href = '/home';
+            alert('Sesión cerrada con éxito');
         } catch (e) {
             console.log(e);
-            throw e;
+            alert('No se pudo cerrar sesión');
         }
     }
 
-    async getDataActualUser() {
+    async getDataActualUser():Promise<any> {
+        const token = this.getToken();
+        if (!token) {
+            throw new Error('No hay token disponible');
+        }
         try {
-            const res = await axios.get(`${this.urlAuth}/auth`, { withCredentials: true });
+            const res = await axios.get(`${this.urlAuth}/auth`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Enviar el token en el encabezado
+                }
+            });
             if (res) {
                 return res.data;
             }
             return null;
         } catch (e) {
-            console.log(e);
+            console.error('Error al obtener información del usuario', e);
             return null;
         }
     }
@@ -128,8 +158,18 @@ export class LoginService {
         }
     }
 
-    async updateDataUser(nombre: string, apellido: string, email: string, password: string) {
+    async updateDataUser(
+        nombre: string,
+        apellido: string,
+        email: string,
+        password: string
+    ) {
         const data = await this.getDataActualUser();
+        const token = this.getToken(); // Obtener el token del servicio de login
+
+        if (!token) {
+            throw new Error('No hay token disponible'); // Manejar el caso donde no hay token
+        }
         if (data) {
             const user: User = {
                 id: data.id,
@@ -137,39 +177,46 @@ export class LoginService {
                 last_name: apellido,
                 email: email,
                 password: password,
-                isAdmin: data.isAdmin
+                isAdmin: data.isAdmin,
             };
             try {
-                const userCredential = await axios.put(`${this.urlAuth}/${data.id}`, user);
+                const userCredential = await axios.put(
+                    `${this.urlAuth}/${data.id}`,
+                    user,{
+                        headers: {
+                            Authorization: `Bearer ${token}` // Enviar el token en el encabezado
+                        }
+                    }
+                );
                 alert('Usuario actualizado con éxito');
             } catch (error) {
-                alert('No se pudo actualizar el usuario')
+                alert('No se pudo actualizar el usuario');
             }
         }
     }
 
-    async isUserLoggedIn(): Promise<boolean> {
-        try {
-            const res = await axios.get(`${this.urlAuth}/auth`, { withCredentials: true });
-            return !!res.data; // Verifica si hay datos en la respuesta
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
+    isUserLoggedIn(): boolean {
+        const token = this.getToken();
+        return token !== null; // Verifica si hay un token almacenado
     }
 
-    isAdmin(): Observable<boolean> {
-        return new Observable<boolean>((observer) => {
-            this.authState$?.subscribe((user) => {
-                if (user) {
-                    observer.next(user.isAdmin);
-                } else {
-                    observer.next(false);
-                }
-            });
-        });
+    // isAdmin(): Observable<boolean> {
+    //     return new Observable<boolean>((observer) => {
+    //         this.authState$?.subscribe((user) => {
+    //             if (user) {
+    //                 observer.next(user.isAdmin);
+    //             } else {
+    //                 observer.next(false);
+    //             }
+    //         });
+    //     });
+    // }
+
+    isAdmin(): boolean {
+        return this.authState$?.value.isAdmin;
     }
 
-    async resetPassword(email: string) {
-    }
+    async resetPassword(email: string) {}
 }
+
+// Método para almacenar el token en el almacenamiento local

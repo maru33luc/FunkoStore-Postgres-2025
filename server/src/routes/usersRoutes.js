@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const verifyToken = require('../middleware/authMiddleware');
 
 const { getAllUsers, getUserById, addUser, updateUser, 
     deleteUser, authUser, isLoggedIn, logout } = require('../controllers/usersControllers');
@@ -8,15 +9,15 @@ router.get ('/', getAllUsers);
 
 router.post ('/auth', authUser); // login
 
-router.get ('/auth', isLoggedIn); // check if logged in
+router.get ('/auth',verifyToken, isLoggedIn); // check if logged in
 
-router.post ('/logout', logout);
+router.post ('/logout',verifyToken, logout);
 
-router.get ('/:id', getUserById);
+router.get ('/:id',verifyToken, getUserById);
 
 router.post ('/',addUser); // register
 
-router.put ('/:id', updateUser);
+router.put ('/:id',verifyToken, updateUser);
 
 router.delete ('/:id',deleteUser);
 
