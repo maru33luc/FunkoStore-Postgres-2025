@@ -13,6 +13,19 @@ app.use(cors({
 
   app.options('*', cors()); // Permite preflight requests para todas las rutas
 
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // Permite todas las solicitudes de todos los orígenes
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!');
+});
+
+
 
 const db = require('./data/db');
 const funkoRoutes = require('./src/routes/funkoRoutes');
