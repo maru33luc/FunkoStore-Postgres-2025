@@ -51,3 +51,5 @@ Thumbs.db
 .env
 /server/.env
 server/.env
+
+render.yaml
