@@ -9,7 +9,7 @@ import { environments } from 'src/environments/environments';
     providedIn: 'root'
 })
 export class FunkosService {
-    private url: string = environments.urlFunkosData;
+    private url: string = 'https://funkostore-postgres-2025.onrender.com/fk';
     private funkos: Funko[] = [];
     private filteredFunkos: Funko[] = [];
     private filteredFunkosSubject: Subject<Funko[]> = new Subject<Funko[]>();
