@@ -39,7 +39,7 @@ if (env.NODE_ENV !== 'production') {
             dialectOptions: {
                 ssl: {
                     require: true, // Forzar uso de SSL
-                    rejectUnauthorized: true, // Aceptar certificados auto-firmados
+                    rejectUnauthorized: false, // Aceptar certificados auto-firmados
                 },
             },
             pool: {
