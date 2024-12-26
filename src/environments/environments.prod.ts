@@ -1,4 +1,4 @@
-const domain = 'https://funkostore-postgres-2025.onrender.com/';
+const domain = 'https://funkostore.onrender.com/';
 
 export const environments = {
     urlFunkosData: domain + 'fk',
@@ -10,5 +10,5 @@ export const environments = {
     urlAPIPotter: 'https://potterhead-api.vercel.app',
     urlPokemonJson: '',
     urlFormsPree: 'https://formspree.io/f/xknlabrk',
-    
+
 }

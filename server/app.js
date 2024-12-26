@@ -7,7 +7,7 @@ const cors = require('cors');
 // const cookieParser = require('cookie-parser');
 
 const corsOptions = {
-  origin: 'https://funkostore-postgres-2025.onrender.com', // Cambia esto por el dominio exacto de tu frontend
+  origin: ['https://funkostore-postgres-2025.onrender.com','http://localhost:4200'], // Cambia esto por el dominio exacto de tu frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Permitir métodos específicos
   credentials: true, // Permitir envío de cookies o credenciales
 };
