@@ -1,6 +1,4 @@
 const domain = 'https://funkostore-postgres-2025.onrender.com/';
-// const domain = 'http://localhost:3000/';
-// const domain = 'https://funkostore.onrender.com/';
 
 export const environments = {
     urlFunkosData: domain + 'fk',

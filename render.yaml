@@ -1,16 +1,33 @@
 services:
   - type: web
     name: FunkoStore-Postgres-2025
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist/funko-store
+    autoDeploy: true
+    region: oregon
+  
+  - type: web
+    name: FunkoStore-Postgres-2025
     env: node
-    buildCommand: 'npm run build'
-    startCommand: 'npm run start'
+    plan: free
+    buildCommand: cd server && npm install
+    startCommand: npm start
     autoDeploy: true
     branch: main
     instanceType: free
     regions:
       - Oregon (US West)
-    envVars:
-      - key: DATABASE_URL
-        value: <tu_url_de_base_de_datos> 
+      envVars:
+      - key: HOSTNAME
+        value: "dpg-ctlhqtqj1k6c73d13iqg-a"
       - key: PORT
-        value: 3000
+        value: "5432"
+      - key: DATABASE
+        value: "funkostoredb"
+      - key: USERNAME
+        value: "funkostoredb_user"
+      - key: PASSWORD
+        value: "0lRDjAZOLuhMR2vEaJEwYpr2XQqXbvc9"
+
+ 
