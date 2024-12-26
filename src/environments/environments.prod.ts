@@ -1,4 +1,5 @@
-const domain = 'https://funkostore-postgres-2025.onrender.com/';
+const domain = 'funkostore.onrender.com/';
+
 
 export const environments = {
     urlFunkosData: domain + 'fk',
