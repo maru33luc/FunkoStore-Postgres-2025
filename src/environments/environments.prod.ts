@@ -1,4 +1,4 @@
-const domain = 'funkostore.onrender.com/';
+const domain = 'https://funkostore.onrender.com/';
 
 
 export const environments = {
