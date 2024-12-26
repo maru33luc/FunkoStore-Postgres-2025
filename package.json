@@ -4,7 +4,7 @@
     "scripts": {
         "ng": "ng",
         "start": "cd server && npm install && npm run start",
-        "build": "npm install && ng build",
+        "build": "npm install && ng build --configuration production",
         "watch": "ng build --watch --configuration development",
         "test": "ng test",
         "funkos": "json-server ./db/funkos.json -w -p 4000",
