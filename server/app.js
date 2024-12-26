@@ -6,14 +6,7 @@ const cors = require('cors');
 // const session = require('express-session');
 // const cookieParser = require('cookie-parser');
 
-// Configurar CORS
-app.use(cors({
-  // origin: ['http://localhost:4200', 'https://funkostore-postgres-2025.onrender.com','https://funko-store-seven.vercel.app', 'https://funkostore.onrender.com'],
-  origin: '*',
-  // credentials: true
-}));
-
-app.options('*', cors()); // Permite preflight requests para todas las rutas
+app.use(cors());
 
 // Manejo de errores
 app.use((err, req, res, next) => {
