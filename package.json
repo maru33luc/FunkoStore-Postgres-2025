@@ -3,8 +3,8 @@
     "version": "0.0.0",
     "scripts": {
         "ng": "ng",
-        "start": "cd server && npm install && npm run start",
-        "build": "npm install && ng build --configuration production",
+        "start": "ng serve",
+        "build": "ng build --configuration production",
         "watch": "ng build --watch --configuration development",
         "test": "ng test",
         "funkos": "json-server ./db/funkos.json -w -p 4000",
