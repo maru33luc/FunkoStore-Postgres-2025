@@ -6,13 +6,18 @@ const cors = require('cors');
 // const session = require('express-session');
 // const cookieParser = require('cookie-parser');
 
-const corsOptions = {
-  origin: ['https://funkostore-postgres-2025.onrender.com','http://localhost:4200', 'https://funkostore.onrender.com/fk','https://funkostore.onrender.com'], // Cambia esto por el dominio exacto de tu frontend
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Permitir métodos específicos
-  credentials: true, // Permitir envío de cookies o credenciales
-};
+// const corsOptions = {
+//   origin: ['https://funkostore-postgres-2025.onrender.com','http://localhost:4200', 'https://funkostore.onrender.com/fk','https://funkostore.onrender.com'], // Cambia esto por el dominio exacto de tu frontend
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Permitir métodos específicos
+//   credentials: true, // Permitir envío de cookies o credenciales
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors({
+  // origin: 'http://localhost:4200',
+  "origin": "*",
+  credentials: true
+}));
 
 
 // Manejo de errores

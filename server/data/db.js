@@ -35,6 +35,7 @@ if (env.NODE_ENV !== 'production') {
             dialect: 'postgres',
             port: process.env.DB_PORT || 5432,
             schema: 'public',
+            ssl: true,  // Habilitar SSL
             dialectOptions: {
                 ssl: {
                     require: true, // Forzar uso de SSL
