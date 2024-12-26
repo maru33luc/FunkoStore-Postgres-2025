@@ -8,9 +8,9 @@ const cors = require('cors');
 
 // Configurar CORS
 app.use(cors({
-  origin: ['http://localhost:4200', 'https://funkostore-postgres-2025.onrender.com','https://funko-store-seven.vercel.app', 'https://funkostore.onrender.com'],
-  // origin: '*',
-  credentials: true
+  // origin: ['http://localhost:4200', 'https://funkostore-postgres-2025.onrender.com','https://funko-store-seven.vercel.app', 'https://funkostore.onrender.com'],
+  origin: '*',
+  // credentials: true
 }));
 
 app.options('*', cors()); // Permite preflight requests para todas las rutas
