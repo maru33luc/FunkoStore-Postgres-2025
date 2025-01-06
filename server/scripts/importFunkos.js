@@ -5,7 +5,7 @@ const Funko = require('../src/models/funkoModel');
 const importFunkos = async () => {
     try {
         // Leer el archivo funkos.json
-        const data = fs.readFileSync('db/funkos.json', 'utf8');
+        const data = fs.readFileSync('../db/funkos.json', 'utf8');
         const funkos = JSON.parse(data).funkos;
 
         // Sincronizar la base de datos
@@ -41,4 +41,4 @@ const importFunkos = async () => {
     }
 };
 
-importFunkos(); 
+importFunkos();

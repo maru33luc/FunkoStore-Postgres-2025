@@ -1,7 +1,14 @@
-require('dotenv').config();
+// require('dotenv').config();
+
+const { env, loadEnvFile } = require('node:process');
+
+if (env.NODE_ENV !== 'production') {
+    loadEnvFile('./.env');
+}
 
 module.exports = {
     "development": {
+
         "username": process.env.DB_USER || "postgres",
         "password": process.env.DB_PASSWORD || "Catalina1450_andrea",
         "database": process.env.DB_NAME || "funkostore",
