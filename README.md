@@ -48,7 +48,7 @@ Bienvenido a Funko Store Online, una tienda online de Funkos con una interfaz at
    Ejecute el siguiente comando:
 
    `npm run dev`  
-   El servidor de desarrollo se iniciará en http://localhost:3000/.
+   El servidor de desarrollo se iniciará en http://localhost:3000/
 
    **Importar Datos de Funkos**  
    Para importar los datos desde el archivo JSON a las tablas de la base de datos, ejecute el script `importFunkos.js`. Asegúrese de que su terminal esté en la carpeta server y ejecute:
