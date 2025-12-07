@@ -39,6 +39,11 @@ app.use(express.urlencoded({ extended: true }));
 // Servir archivos estáticos desde la carpeta 'dist', en la raíz del sitio
 app.use(express.static(path.join(__dirname, 'dist', 'funko-store')));
 
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+
 // Rutas de la API
 app.use('/fk', funkoRoutes);
 app.use('/users', usersRoutes);
