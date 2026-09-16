@@ -3,34 +3,34 @@ const bcrypt = require('bcrypt');
 const cartServices = require('./cartServices');
 
 module.exports = {
-    getAllUsers: async() => {
-        try{
+    getAllUsers: async () => {
+        try {
             const users = await UserModel.findAll();
             return users;
-        }catch(error){
+        } catch (error) {
             console.log(error);
-            return {error: 'Ocurrio un error'};
+            return { error: 'Ocurrio un error' };
         }
     },
-    getUserById : async(id) => {
-        try{
+    getUserById: async (id) => {
+        try {
             const user = await UserModel.findByPk(id);
             return user;
-        }catch(error){
+        } catch (error) {
             console.log(error);
-            return {error: 'Ocurrio un error'};
+            return { error: 'Ocurrio un error' };
         }
     },
-    addUser: async(newUser) => {
-        try{
+    addUser: async (newUser) => {
+        try {
             newUser.password = bcrypt.hashSync(newUser.password, 10);
             const user = await UserModel.create(newUser);
             const cart = await cartServices.createCart(user.id);
             console.log('cart', cart);
             return user;
-        }catch(error){
+        } catch (error) {
             console.log(error);
-            return {error: 'Ocurrio un error'};
+            return { error: 'Ocurrio un error' };
         }
     },
     updateUser: async (id, updatedUser) => {
@@ -42,7 +42,7 @@ module.exports = {
             if (updatedUser.password && !bcrypt.compareSync(updatedUser.password, existingUser.password)) {
                 // Generar un nuevo hash solo si la contraseña se ha cambiado
                 updatedUser.password = bcrypt.hashSync(updatedUser.password, 10);
-            }else {
+            } else {
                 // Si la contraseña no se ha cambiado, eliminarla del objeto updatedUser
                 delete updatedUser.password;
             }
@@ -59,30 +59,30 @@ module.exports = {
             return { error: 'Ocurrió un error' };
         }
     },
-    deleteUser: async(id) => {
-        try{
+    deleteUser: async (id) => {
+        try {
             await UserModel.destroy({
                 where: {
                     id: id
                 }
             });
-            return {success: 'Se ha eliminado el usuario'};
-        }catch(error){
+            return { success: 'Se ha eliminado el usuario' };
+        } catch (error) {
             console.log(error);
-            return {error: 'Ocurrio un error'};
+            return { error: 'Ocurrio un error' };
         }
     },
-    getUserByEmail: async(email) => {
-        try{
+    getUserByEmail: async (email) => {
+        try {
             const user = await UserModel.findOne({
                 where: {
                     email: email
                 }
             });
             return user;
-        }catch(error){
+        } catch (error) {
             console.log(error);
-            return {error: 'Ocurrio un error'};
+            return { error: 'Ocurrio un error' };
         }
     },
     getUserByEmailAndPassword: async (email, password) => {

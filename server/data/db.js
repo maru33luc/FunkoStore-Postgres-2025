@@ -17,12 +17,13 @@ if (env.NODE_ENV !== 'production') {
             },
         },
         pool: {
-            max: 10,        // Aumentado de 5 a 10 para manejar más conexiones concurrentes
-            min: 2,         // Mantenemos al menos 2 conexiones abiertas para evitar cold starts
-            acquire: 30000,
-            idle: 10000,
+            max: 5,         // Límite seguro por proceso para no agotar el pooler (límite total: 15)
+            min: 0,         // Liberar todas las conexiones inactivas
+            acquire: 30000, // Tiempo máximo de espera para obtener una conexión
+            idle: 5000,     // Liberar conexión inactiva tras 5 segundos
+            evict: 1000,    // Evaluar conexiones inactivas cada segundo
         },
-        logging: false, // Desactiva logs para mantener consola limpia (puedes habilitarlo si necesitas depuración)
+        logging: false, // Desactiva logs para mantener consola limpia
     });
     module.exports = db;
 } else {
@@ -43,12 +44,13 @@ if (env.NODE_ENV !== 'production') {
                 },
             },
             pool: {
-                max: 10,        // Aumentado de 5 a 10 para manejar más conexiones concurrentes
-                min: 2,         // Mantenemos al menos 2 conexiones abiertas para evitar cold starts
+                max: 5,         // Límite seguro por proceso para no agotar el pooler
+                min: 0,         // Liberar todas las conexiones inactivas
                 acquire: 30000,
-                idle: 10000,
+                idle: 5000,
+                evict: 1000,
             },
-            logging: false, // Desactiva logs para mantener consola limpia (puedes habilitarlo si necesitas depuración)
+            logging: false,
         }
     );
     module.exports = db;

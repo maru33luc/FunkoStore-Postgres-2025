@@ -2,7 +2,7 @@
     <h1 class="h1">CARRITO DE COMPRAS</h1>
 
     <ul class="cart-items">
-        <li class="cart-item" *ngFor="let item of cartItemsCopy">
+        <li class="cart-item" *ngFor="let item of cartItemsCopy; trackBy: trackByFunkoId">
             <div class="cart-item-info">
                 <picture class="cart-item-picture">
                     <img [src]="item.front_image" alt="{{item.name}}">

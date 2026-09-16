@@ -18,6 +18,7 @@ export class CartComponent {
     cartItemsCopy: any[] = [];
     cartItemsId: number[] = [];
     user: Observable<User> | undefined;
+    currentUser: User | undefined;
     cart: any;
     totalQuantity: BehaviorSubject<number> = new BehaviorSubject<number>(0);
     totalPrice: BehaviorSubject<number> = new BehaviorSubject<number>(0);
@@ -90,27 +91,35 @@ export class CartComponent {
     }
 
     async loadFunkoDetails() {
-        this.cartItemsCopy = []; // Clear the array before populating it again
-        // Use a Map to track unique items based on funkoId
         const uniqueItemsMap = new Map<number, any>();
         
-        for (const item of this.cartItems) {
+        const promises = this.cartItems.map(async (item) => {
+            const existing = this.cartItemsCopy.find(c => (c.id === item.funkoId || c.funkoId === item.funkoId));
+            if (existing) {
+                return { ...existing, quantity: item.quantity };
+            }
             try {
                 const funko: any | undefined = await this.funkoService.getFunko(item.funkoId);
                 if (funko) {
-                    const itemACopiar = { ...funko, quantity: item.quantity };
-                    // Use funkoId as the key to ensure uniqueness
-                    uniqueItemsMap.set(item.funkoId, itemACopiar);
-                    
+                    return { ...funko, quantity: item.quantity };
                 } else {
                     console.log('Item not found:', item);
                 }
             } catch (error) {
                 console.error('Error loading details for item:', item, error);
             }
-        }
-        // Convert the Map values back to an array
-        this.cartItemsCopy = Array.from(uniqueItemsMap.values());  
+            return null;
+        });
+
+        const details = await Promise.all(promises);
+        details.forEach(detail => {
+            if (detail) {
+                uniqueItemsMap.set(detail.id || detail.funkoId, detail);
+            }
+        });
+
+        this.cartItemsCopy = Array.from(uniqueItemsMap.values());
+        this.obtenerTotalPrice();
     }
 
     async increaseQuantity(item: any) {
@@ -194,23 +203,27 @@ export class CartComponent {
             cancelButtonText: "CANCELAR"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                if (this.user) {
-                    this.loginService.authStateObservable()?.subscribe(async (user) => {
-                        if (user) {
-                            const userId = user.id || 0; // Add null check and provide a default value
-                            const res = await this.cartService.eliminarDelCarrito(item.id, userId);
-                            if (res) {
-                                this.cartItems = this.cartItems.filter((cartItem) => cartItem.funkoId !== item.id);
-                            }
-                            await this.loadFunkoDetails();
-                        }
-                    });
+                const itemId = item.id || item.funkoId;
+
+                // Remover inmediatamente de las listas locales para evitar parpadeo de pantalla
+                this.cartItemsCopy = this.cartItemsCopy.filter(c => (c.id !== itemId && c.funkoId !== itemId));
+                this.cartItems = this.cartItems.filter(c => c.funkoId !== itemId);
+
+                const totalItems = this.cartItemsCopy.reduce((total, c) => total + c.quantity, 0);
+                this.totalQuantity.next(totalItems);
+                this.obtenerTotalPrice();
+
+                if (this.currentUser && this.currentUser.id) {
+                    await this.cartService.eliminarDelCarrito(itemId, this.currentUser.id);
                 } else {
-                    this.cartLocalService.removeFromCart(item.id);
-                    this.cartItems = this.cartItems.filter((cartItem) => cartItem !== item);
+                    this.cartLocalService.removeFromCart(itemId);
                 }
             }
         });
+    }
+
+    trackByFunkoId(index: number, item: any): number {
+        return item.id || item.funkoId || index;
     }
 
     getTotalQuantity(): Observable<number> {
