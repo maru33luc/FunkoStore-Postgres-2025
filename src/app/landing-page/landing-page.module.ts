@@ -35,6 +35,9 @@ import { SharedModule } from '../shared/shared.module';
         LandingPageRoutingModule,
         ShopModule,
         SharedModule
+    ],
+    exports: [
+        TermsComponent
     ]
 })
 export class LandingPageModule { }

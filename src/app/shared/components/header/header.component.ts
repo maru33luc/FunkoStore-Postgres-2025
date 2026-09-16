@@ -6,7 +6,6 @@ import { LoginService } from 'src/app/services/login.service';
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
-    template: `<div #hambIcon></div>`,
     styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {

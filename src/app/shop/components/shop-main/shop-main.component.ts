@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Funko } from 'src/app/interfaces/Funko';
 import { FunkosService } from 'src/app/services/funkos.service';
 import { OrderFunkosService } from 'src/app/services/order-funkos.service';
@@ -10,7 +10,7 @@ import { OrderFunkosService } from 'src/app/services/order-funkos.service';
     templateUrl: './shop-main.component.html',
     styleUrls: ['./shop-main.component.css']
 })
-export class ShopMainComponent implements OnInit {
+export class ShopMainComponent implements OnInit, OnDestroy {
     lista: Funko[] = [];
     itemsPerPage = 9;
     currentPage = 0;
@@ -19,21 +19,31 @@ export class ShopMainComponent implements OnInit {
     filteredFunkos$: Observable<Funko[]> | undefined;
     minPrice: number = 0;
     maxPrice: number = 0; // Valores iniciales de precio mínimo y máximo
+    totalItems = 0; // Total de items del backend
+    private subscriptions: Subscription[] = [];
 
     constructor(private funkoService: FunkosService,
         private orderService: OrderFunkosService,
         private activatedRoute: ActivatedRoute) { }
 
-    ngOnInit() {
+    async ngOnInit() {
+        // Suscripción a cambios de filtros
+        const filterSub = this.funkoService.getFilteredFunkosObservable().subscribe(filteredFunkos => {
+            this.lista = filteredFunkos;
+            this.totalItems = this.lista.length;
+            this.currentPage = 0;
+            this.calculateTotalPages();
+            this.updatePaginationVisibility();
+        });
+        this.subscriptions.push(filterSub);
+
+        await this.loadFunkos();
+
         this.activatedRoute.paramMap.subscribe(params => {
             const licence = params.get('licence');
-            if (licence != null) {
-                this.orderService.setLicenceQuery(licence || '');
-                this.funkoService.aplicarFiltro("licence", licence || '', 0, 0);
-                this.currentPage = 0;
-                this.calculateTotalPages();
-            } else {
-                this.mostrarFunkos();
+            if (licence != null && licence !== '') {
+                this.orderService.setLicenceQuery(licence);
+                this.funkoService.aplicarFiltro("licence", licence, 0, 0);
             }
         });
         this.filteredFunkos$ = this.funkoService.getFilteredFunkosObservable();
@@ -42,96 +52,84 @@ export class ShopMainComponent implements OnInit {
         });
 
         // Suscripción a cambios en el orden
-        this.orderService.orderType$.subscribe(orderType => {
-            if (orderType === "az" || orderType === "za") {
+        const orderSub = this.orderService.orderType$.subscribe(orderType => {
+            if (orderType === "az" || orderType === "za" || orderType === "asc" || orderType === "desc") {
                 this.funkoService.aplicarFiltro("order", orderType, 0, 0);
-                this.currentPage = 0; // Reiniciar a la primera página después de cambiar el orden
-                this.calculateTotalPages(); // Recalcular el número de páginas
             }
         });
+        this.subscriptions.push(orderSub);
 
         // Suscripción a cambios en el filtro de búsqueda
-        this.orderService.searchQuery$.subscribe((query) => {
+        const searchSub = this.orderService.searchQuery$.subscribe((query) => {
             if (query.length !== 0) {
                 this.funkoService.aplicarFiltro("name", query, 0, 0);
-                this.currentPage = 0;
-                this.calculateTotalPages();
             } else {
                 this.funkoService.limpiarFiltro("name");
-                this.lista = this.funkoService.mostrarListaFiltrada();
             }
         });
-
-        // Suscripción a cambios de filtros
-        this.funkoService.getFilteredFunkosObservable().subscribe(filteredFunkos => {
-            this.lista = filteredFunkos;
-            this.currentPage = 0;
-            this.calculateTotalPages();
-            this.updatePaginationVisibility();
-        });
+        this.subscriptions.push(searchSub);
 
         // Suscripción a cambios en el filtro de precio
-        this.orderService.minPriceSubject.subscribe((minPrice) => {
+        const minPriceSub = this.orderService.minPriceSubject.subscribe((minPrice) => {
             if (minPrice !== 0) {
                 this.minPrice = minPrice;
                 this.funkoService.aplicarFiltro("price", "", minPrice, this.maxPrice);
-                this.currentPage = 0;
-                this.calculateTotalPages();
+            } else {
+                this.funkoService.limpiarFiltro("price");
             }
         });
+        this.subscriptions.push(minPriceSub);
 
         // Suscripción a cambios en el filtro de precio
-        this.orderService.maxPriceSubject.subscribe((maxPrice) => {
+        const maxPriceSub = this.orderService.maxPriceSubject.subscribe((maxPrice) => {
             if (maxPrice !== 0) {
                 this.maxPrice = maxPrice;
-                this.funkoService.aplicarFiltro("price", "", this.minPrice, this.maxPrice);
-                this.currentPage = 0;
-                this.calculateTotalPages();
+                this.funkoService.aplicarFiltro("price", "", this.minPrice, maxPrice);
+            } else {
+                this.funkoService.limpiarFiltro("price");
             }
         });
+        this.subscriptions.push(maxPriceSub);
 
-        // Suscripción a cambios en el filtro de serie
-        this.orderService.categoryQuery$.subscribe((serie) => {
+        // Suscripción a cambios en el filtro de serie / categoria
+        const categorySub = this.orderService.categoryQuery$.subscribe((serie) => {
             if (serie.length !== 0) {
                 this.funkoService.aplicarFiltro("category", serie, 0, 0);
-                this.currentPage = 0;
-                this.calculateTotalPages();
             } else {
                 this.funkoService.limpiarFiltro("category");
-                this.lista = this.funkoService.mostrarListaFiltrada();
             }
         });
+        this.subscriptions.push(categorySub);
 
         // Suscripción a cambios en el filtro de licencia
-        this.orderService.licenceQuery$?.subscribe((licence) => {
+        const licenceSub = this.orderService.licenceQuery$?.subscribe((licence) => {
             if (licence.length !== 0) {
                 this.funkoService.aplicarFiltro("licence", licence, 0, 0);
-                this.currentPage = 0;
-                this.calculateTotalPages();
             } else {
                 this.funkoService.limpiarFiltro("licence");
-                this.lista = this.funkoService.mostrarListaFiltrada();
             }
         });
+        if (licenceSub) this.subscriptions.push(licenceSub);
     }
 
-    async mostrarFunkos() {
-        const response = await this.funkoService.getFunkos();
-        if (response != undefined) {
-            this.lista = response as Funko[];
-            // ordenar la lista por nombre ascendente
-            this.lista.sort((a, b) => a.name.localeCompare(b.name));
-            this.calculateTotalPages();
-        } else {
-            console.log('Error al mostrar los funkos');
+    ngOnDestroy() {
+        this.subscriptions.forEach(sub => sub.unsubscribe());
+    }
+
+    async loadFunkos() {
+        try {
+            await this.funkoService.levantarFunkos();
+        } catch (error) {
+            console.error('Error loading funkos:', error);
         }
     }
 
     calculateTotalPages() {
-        this.pages = Array(Math.ceil(this.lista.length / this.itemsPerPage)).fill(0).map((_, i) => i);
+        this.pages = Array(Math.ceil(this.totalItems / this.itemsPerPage)).fill(0).map((_, i) => i);
     }
 
     get paginatedItems() {
+        if (!Array.isArray(this.lista)) return [];
         const startIndex = this.currentPage * this.itemsPerPage;
         const endIndex = startIndex + this.itemsPerPage;
         return this.lista.slice(startIndex, endIndex);

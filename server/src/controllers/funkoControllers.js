@@ -3,8 +3,8 @@ const funkoServices = require('../services/funkoServices');
 module.exports = {
     getAllFunkos: async(req, res) => {
         try{
-            const funkos = await funkoServices.getAllFunkos();
-            res.json(funkos);
+            const result = await funkoServices.getAllFunkos(req, res);
+            res.json(result);
         }catch(error){
             console.log(error);
             res.json({error: 'Ocurrio un error'});

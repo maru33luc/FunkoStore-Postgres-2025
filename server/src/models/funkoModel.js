@@ -43,6 +43,12 @@ const Funko = db.define('funkos', {
         type: DataTypes.STRING(200),
         allowNull: true
     },
+    image_url: {
+        type: DataTypes.VIRTUAL,
+        get() {
+            return this.front_image;
+        }
+    },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -56,7 +62,31 @@ const Funko = db.define('funkos', {
         timestamps: true,
       }
 },{
-    schema: 'public'
+    schema: 'public',
+    indexes: [
+      {
+        name: 'idx_funkos_category',
+        fields: ['category']
+      },
+      {
+        name: 'idx_funkos_name',
+        fields: ['name']
+      },
+      {
+        name: 'idx_funkos_price',
+        fields: ['price']
+      },
+      {
+        name: 'idx_funkos_licence',
+        fields: ['licence']
+      }
+    ]
 });
+
+Funko.prototype.toJSON = function () {
+    const values = Object.assign({}, this.get());
+    values.image_url = this.image_url;
+    return values;
+};
 
 module.exports = Funko;

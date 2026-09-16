@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Funko } from '../interfaces/Funko';
-import { BehaviorSubject, Observable, Subject, catchError, scan } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError, scan, from, shareReplay, map } from 'rxjs';
 import axios from 'axios';
 import { OrderFunkosService } from './order-funkos.service';
 import { environments } from 'src/environments/environments';
@@ -16,9 +16,16 @@ export class FunkosService {
     private appliedFilters: { type: string; criteria: string, min: number, max: number }[] = [];
     private history: Funko[][] = [];
     stockFunkoSubject$ = new BehaviorSubject<number>(0);
+    
+    // Observable para cachear la respuesta de getFunkos
+    private funkos$!: Observable<Funko[] | undefined>;
 
     constructor(private orderFunkoService: OrderFunkosService) {
         this.initialize();
+        // Inicializar el observable cacheado
+        this.funkos$ = from(this.getFunkos()).pipe(
+          shareReplay(1) // Cachea la última emisión
+        );
     }
 
     async initialize() {
@@ -48,12 +55,24 @@ export class FunkosService {
     async getFunkos(): Promise<Funko[] | undefined> {
         try {
             const response = await axios.get(this.url);
-            return response.data;
+            // El backend devuelve { funkos: rows, total: count } o directamente un array
+            if (response.data && Array.isArray(response.data.funkos)) {
+                return response.data.funkos;
+            }
+            if (Array.isArray(response.data)) {
+                return response.data;
+            }
+            return [];
         }
         catch (e) {
             console.log(e);
         }
         return undefined;
+    }
+
+    // Nuevo método para obtener funkos con caching
+    getFunkosCached(): Observable<Funko[] | undefined> {
+      return this.funkos$;
     }
 
     async getFunko(id: number | undefined): Promise<Funko | undefined> {
@@ -73,6 +92,8 @@ export class FunkosService {
             const lastIndex = funkos?.length;
             funko!.id = lastIndex! + 1;
             const response = await axios.post(`${this.url}`, funko);
+            // Invalidar cache después de crear
+            this.invalidateFunkosCache();
         }
         catch (e) {
             console.log(e);
@@ -82,6 +103,8 @@ export class FunkosService {
     async putFunko(funko: Funko, id: number | undefined) {
         try {
             const response = await axios.put(`${this.url}/${id}`, funko);
+            // Invalidar cache después de actualizar
+            this.invalidateFunkosCache();
         }
         catch (e) {
             console.log(e);
@@ -104,10 +127,19 @@ export class FunkosService {
     async deleteFunko(id: number | undefined) {
         try {
             const response = await axios.delete(`${this.url}/${id}`);
+            // Invalidar cache después de eliminar
+            this.invalidateFunkosCache();
         }
         catch (e) {
             console.log(e);
         }
+    }
+
+    // Método para invalidar el cache
+    private invalidateFunkosCache() {
+      this.funkos$ = from(this.getFunkos()).pipe(
+        shareReplay(1)
+      );
     }
 
     async obtenerStockFunko(id: number | undefined): Promise<number | undefined> {
@@ -128,8 +160,7 @@ export class FunkosService {
     }
 
     showAllFunkos() {
-        this.filteredFunkos = this.funkos;
-        this.filteredFunkosSubject.next(this.filteredFunkos);
+        this.clearAllFilters();
     }
 
     obtenerPrecioFunko(id: number): number | undefined {
@@ -143,70 +174,40 @@ export class FunkosService {
     }
 
     aplicarFiltro(name: string, criteria: string, min: number, max: number): Funko[] {
-        if (!this.appliedFilters.find(filter => filter.type === name)) {
-            this.appliedFilters.push({ type: name, criteria, min, max });
+        if (name && name !== "") {
+            const existing = this.appliedFilters.find(filter => filter.type === name);
+            if (!existing) {
+                this.appliedFilters.push({ type: name, criteria, min, max });
+            } else {
+                existing.criteria = criteria;
+                existing.min = min;
+                existing.max = max;
+            }
         }
-        // caso en que el filtro tenga el mismo nombre pero criteria distinto
-        else if (this.appliedFilters.find(filter => filter.type === name && filter.criteria !== criteria)) {
-            this.appliedFilters.find(filter => filter.type === name)!.criteria = criteria;
-        }
-        this.levantarFunkos();
-        let result = this.funkos;
 
-        // Crea una copia de los filtros aplicados para no modificar el array original
-        let appliedFiltersCopy = [...this.appliedFilters];
+        let result = [...(this.funkos || [])];
 
-        // Aplica cada filtro en orden
-        appliedFiltersCopy.forEach(filtro => {
+        this.appliedFilters.forEach(filtro => {
             const { type, criteria, min, max } = filtro;
 
-            if (type === 'name') {
-                if (criteria !== "") {
-                    this.undoFilters();
-                    this.limpiarFiltro("name");
-                }
+            if (type === 'name' && criteria && criteria !== '') {
                 result = result.filter((funko) =>
                     (funko.name || '').toLowerCase().includes(criteria.toLowerCase())
                 );
             } else if (type === 'price') {
-                let max: number = 0;
-                let min: number = 0;
-                this.orderFunkoService.maxPriceSubject.subscribe((maxPrice) => {
-                    if (maxPrice !== 0) {
-                        max = maxPrice;
-                    } else if (maxPrice == 0) {
-                        max = 1000000;
-                        this.undoFilters();
-                        this.limpiarFiltro("price");
-                    }
-                });
-                this.orderFunkoService.minPriceSubject.subscribe((minPrice) => {
-                    if (minPrice !== 0) {
-                        min = minPrice;
-                    }
-                });
+                const effectiveMin = min || 0;
+                const effectiveMax = (max && max > 0) ? max : 1000000;
                 result = result.filter(funko => {
-                    const price = funko.price;
-                    return !isNaN(price) && price >= min && price <= max;
+                    const price = Number(funko.price);
+                    return !isNaN(price) && price >= effectiveMin && price <= effectiveMax;
                 });
-
-            } else if (type === 'category') {
-                if (!this.appliedFilters.find(filter => filter.type === "licence")) {
-                    result = this.funkos.filter((funko) =>
-                        (funko.category == criteria && typeof funko.category === 'string')
-                    );
-
-                }
+            } else if (type === 'category' && criteria && criteria !== '') {
                 result = result.filter((funko) =>
-                    (funko.category == criteria && typeof funko.category === 'string')
+                    funko.category === criteria
                 );
-            } else if (type === 'licence') {
-                if (criteria == "") {
-                    this.undoFilters();
-                    this.limpiarFiltro("licence");
-                }
+            } else if (type === 'licence' && criteria && criteria !== '') {
                 result = result.filter((funko) =>
-                    (funko.licence == criteria && typeof funko.licence === 'string')
+                    funko.licence === criteria
                 );
             } else if (type === 'order') {
                 if (criteria === 'az') {
@@ -214,51 +215,38 @@ export class FunkosService {
                 } else if (criteria === 'za') {
                     result.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
                 } else if (criteria === 'asc') {
-                    result.sort((a, b) => a.price - b.price);
+                    result.sort((a, b) => Number(a.price) - Number(b.price));
                 } else if (criteria === 'desc') {
-                    result.sort((a, b) => b.price - a.price);
+                    result.sort((a, b) => Number(b.price) - Number(a.price));
                 }
             }
         });
-        // Guarda el estado actual en el historial
-        this.history.push([...result]);
+
+        this.filteredFunkos = result;
         this.filteredFunkosSubject.next(result);
         return result;
     }
 
     limpiarFiltro(name: string) {
-        const filter = this.appliedFilters.find(filter => filter.type === name);
-        if (filter) {
-            this.appliedFilters.splice(this.appliedFilters.indexOf(filter), 1);
-        }
+        this.appliedFilters = this.appliedFilters.filter(filter => filter.type !== name);
+        this.aplicarFiltro("", "", 0, 0);
     }
 
     undoFilters(): Funko[] {
-        if (this.appliedFilters.length == 0) {
-            this.showAllFunkos();
-            return this.funkos;
+        if (this.appliedFilters.length > 0) {
+            this.appliedFilters.pop();
         }
-
-        if (this.history.length > 1) {
-            // Elimina el estado actual del historial y retrocede al estado anterior
-            this.history.pop();
-            const previousState = this.history[this.history.length - 1];
-            this.filteredFunkosSubject.next([...previousState]);
-            this.aplicarFiltro("", "", 0, 0);
-            return [...previousState];
-        } else {
-            // No hay estados anteriores para retroceder
-            return this.funkos;
-        }
+        return this.aplicarFiltro("", "", 0, 0);
     }
 
     clearAllFilters() {
         this.appliedFilters = [];
         this.history = [];
-        this.filteredFunkosSubject.next(this.funkos);
+        this.filteredFunkos = [...(this.funkos || [])];
+        this.filteredFunkosSubject.next(this.filteredFunkos);
     }
 
     mostrarListaFiltrada() {
-        return this.history[this.history.length - 1];
+        return this.filteredFunkos;
     }
 }

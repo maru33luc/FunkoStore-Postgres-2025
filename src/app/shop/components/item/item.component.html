@@ -1,8 +1,8 @@
 <main class="main item-container">
     <article class="item">
         <picture class="item-picture ">
-            <img class="item-img-front" src="{{selectedItem?.front_image}}">
-            <img class="item-img-back" src="{{selectedItem?.back_image}}">
+            <img class="item-img-front" [src]="selectedItem?.image_url || selectedItem?.front_image" alt="Figura coleccionable Funko" loading="lazy">
+            <img class="item-img-back" [src]="selectedItem?.back_image" alt="Figura coleccionable Funko" loading="lazy">
         </picture>
 
         <section class="item-info">

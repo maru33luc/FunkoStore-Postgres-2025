@@ -17,8 +17,8 @@ if (env.NODE_ENV !== 'production') {
             },
         },
         pool: {
-            max: 5,
-            min: 0,
+            max: 10,        // Aumentado de 5 a 10 para manejar más conexiones concurrentes
+            min: 2,         // Mantenemos al menos 2 conexiones abiertas para evitar cold starts
             acquire: 30000,
             idle: 10000,
         },
@@ -43,8 +43,8 @@ if (env.NODE_ENV !== 'production') {
                 },
             },
             pool: {
-                max: 5,
-                min: 0,
+                max: 10,        // Aumentado de 5 a 10 para manejar más conexiones concurrentes
+                min: 2,         // Mantenemos al menos 2 conexiones abiertas para evitar cold starts
                 acquire: 30000,
                 idle: 10000,
             },

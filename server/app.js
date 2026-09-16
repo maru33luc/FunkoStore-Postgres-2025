@@ -1,4 +1,5 @@
 const express = require('express');
+const compression = require('compression');
 const app = express();
 const path = require('path');  // Asegúrate de importar path
 const port = process.env.PORT || 3000;
@@ -19,6 +20,8 @@ app.use(cors({
   credentials: true
 }));
 
+// Compresión de respuestas
+app.use(compression());
 
 // Manejo de errores
 app.use((err, req, res, next) => {

@@ -43,6 +43,7 @@ export class SliderComponent implements OnInit {
     }
 
     get pagedItems() {
+        if (!Array.isArray(this.lista)) return [];
         const startIndex = this.currentPage * this.itemsPerPage;
         const endIndex = startIndex + this.itemsPerPage;
         return this.lista.slice(startIndex, endIndex);

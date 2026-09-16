@@ -2,9 +2,23 @@ const FunkoModel = require('../models/funkoModel');
 
 module.exports = {
     getAllFunkos: async(req, res) => {
-        try{
-            const funkos = await FunkoModel.findAll();
-            return funkos;
+        try {
+            const { page, limit } = req.query || {};
+            
+            const options = {
+                attributes: ['id', 'name', 'price', 'category', 'front_image', 'back_image', 'description', 'stock', 'licence', 'serie']
+            };
+
+            if (limit) {
+                const limitNum = parseInt(limit);
+                const pageNum = parseInt(page) || 1;
+                options.limit = limitNum;
+                options.offset = (pageNum - 1) * limitNum;
+            }
+            
+            const { count, rows } = await FunkoModel.findAndCountAll(options);
+            
+            return { funkos: rows, total: count };
         }catch(error){
             console.log(error);
             return {error: 'Ocurrio un error'};

@@ -9,7 +9,6 @@ import { CommonModule } from '@angular/common';
 import { AuthRoutingModule } from './auth-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AdminModule } from '../admin/admin.module';
 
 
 @NgModule({
@@ -23,8 +22,7 @@ import { AdminModule } from '../admin/admin.module';
         CommonModule,
         AuthRoutingModule,
         SharedModule,
-        ReactiveFormsModule,
-        AdminModule
+        ReactiveFormsModule
     ]
 })
 export class AuthModule { }
