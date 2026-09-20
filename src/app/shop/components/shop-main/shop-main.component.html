@@ -1,5 +1,21 @@
 <main class="shop-main">
-    <ul class="shop-main-items">
+    <!-- Skeleton Grid Loader -->
+    <ul class="shop-main-items" *ngIf="isLoading">
+        <li *ngFor="let item of skeletonItems.slice(0, itemsPerPage)">
+            <article class="shop-main-item shop-skeleton-card">
+                <div class="shop-skeleton-img shimmer"></div>
+                <div class="shop-skeleton-info">
+                    <div class="shop-skeleton-line title shimmer"></div>
+                    <div class="shop-skeleton-line text shimmer"></div>
+                    <div class="shop-skeleton-line short shimmer"></div>
+                    <div class="shop-skeleton-line price shimmer"></div>
+                </div>
+            </article>
+        </li>
+    </ul>
+
+    <!-- Real Items Grid -->
+    <ul class="shop-main-items" *ngIf="!isLoading">
         <li *ngFor="let item of paginatedItems">
             <article class="shop-main-item">
                 <a [routerLink]="'/shop/'+ item.id">
@@ -19,7 +35,7 @@
         </li>
     </ul>
 
-    <div class="pagination" *ngIf="showPagination">
+    <div class="pagination" *ngIf="!isLoading && showPagination">
         <ul class="pagination-list">
             <li id="pagination-previous-page" [class.disabled]="currentPage === 0"
                 (click)="changePage(currentPage - 1)">

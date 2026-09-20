@@ -21,6 +21,16 @@ export class SliderComponent implements OnInit {
 
     ngOnInit() {
         this.updateItemsPerPage();
+        this.funkoService.getFilteredFunkosObservable().subscribe(funkos => {
+            if (funkos && funkos.length > 0) {
+                this.lista = [...funkos];
+                if (this.filtroLista) {
+                    this.lista = this.lista.filter(funko => funko.licence === this.filtroLista);
+                }
+                this.calculateTotalPages();
+                this.isLoading = false;
+            }
+        });
         this.mostrarFunkos();
         window.addEventListener('resize', () => {
             this.updateItemsPerPage();
@@ -31,20 +41,22 @@ export class SliderComponent implements OnInit {
         this.isLoading = true;
         try {
             const response = await this.funkoService.getFunkos();
-            if (response != undefined) {
+            if (response != undefined && response.length > 0) {
                 this.lista = response as Funko[];
-                // Aplicar filtro por algun criterio si está presente
                 if (this.filtroLista) {
                     this.lista = this.lista.filter(funko => funko.licence === this.filtroLista);
                 }
                 this.calculateTotalPages();
+                this.isLoading = false;
             } else {
                 console.log('Error al mostrar los funkos');
             }
         } catch (error) {
             console.error(error);
         } finally {
-            this.isLoading = false;
+            if (this.lista && this.lista.length > 0) {
+                this.isLoading = false;
+            }
         }
     }
 

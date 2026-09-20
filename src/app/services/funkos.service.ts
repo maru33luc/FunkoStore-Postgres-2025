@@ -67,6 +67,7 @@ export class FunkosService {
                 }
                 this.funkos = result;
                 this.filteredFunkos = result;
+                this.filteredFunkosSubject.next(result);
                 return result;
             } catch (e) {
                 console.log(e);

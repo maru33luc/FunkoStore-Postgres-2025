@@ -16,6 +16,8 @@ export class ShopMainComponent implements OnInit, OnDestroy {
     currentPage = 0;
     pages: number[] = [];
     showPagination = true;
+    isLoading: boolean = true;
+    skeletonItems: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     filteredFunkos$: Observable<Funko[]> | undefined;
     minPrice: number = 0;
     maxPrice: number = 0; // Valores iniciales de precio mínimo y máximo
@@ -34,6 +36,9 @@ export class ShopMainComponent implements OnInit, OnDestroy {
             this.currentPage = 0;
             this.calculateTotalPages();
             this.updatePaginationVisibility();
+            if (this.lista && this.lista.length > 0) {
+                this.isLoading = false;
+            }
         });
         this.subscriptions.push(filterSub);
 
@@ -117,10 +122,13 @@ export class ShopMainComponent implements OnInit, OnDestroy {
     }
 
     async loadFunkos() {
+        this.isLoading = true;
         try {
-            await this.funkoService.levantarFunkos();
+            await this.funkoService.getFunkos();
         } catch (error) {
             console.error('Error loading funkos:', error);
+        } finally {
+            this.isLoading = false;
         }
     }
 
