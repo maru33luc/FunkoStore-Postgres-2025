@@ -12,12 +12,15 @@ export class SliderComponent implements OnInit {
     itemsPerPage = 4;
     currentPage = 0;
     pages: number[] = [];
+    isLoading: boolean = true;
+    skeletonItems: number[] = [1, 2, 3, 4];
     @Input() title: string | undefined;
     @Input() filtroLista: string | undefined;
 
     constructor(private funkoService: FunkosService) { }
 
     ngOnInit() {
+        this.updateItemsPerPage();
         this.mostrarFunkos();
         window.addEventListener('resize', () => {
             this.updateItemsPerPage();
@@ -25,16 +28,23 @@ export class SliderComponent implements OnInit {
     }
 
     async mostrarFunkos() {
-        const response = await this.funkoService.getFunkos();
-        if (response != undefined) {
-            this.lista = response as Funko[];
-            // Aplicar filtro por algun criterio si está presente
-            if (this.filtroLista) {
-                this.lista = this.lista.filter(funko => funko.licence === this.filtroLista);
+        this.isLoading = true;
+        try {
+            const response = await this.funkoService.getFunkos();
+            if (response != undefined) {
+                this.lista = response as Funko[];
+                // Aplicar filtro por algun criterio si está presente
+                if (this.filtroLista) {
+                    this.lista = this.lista.filter(funko => funko.licence === this.filtroLista);
+                }
+                this.calculateTotalPages();
+            } else {
+                console.log('Error al mostrar los funkos');
             }
-            this.calculateTotalPages();
-        } else {
-            console.log('Error al mostrar los funkos');
+        } catch (error) {
+            console.error(error);
+        } finally {
+            this.isLoading = false;
         }
     }
 

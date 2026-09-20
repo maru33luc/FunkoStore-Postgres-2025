@@ -1,6 +1,21 @@
 <section class="main slider-container">
     <h2 class="h2 slider-title">{{title}}</h2>
-    <ul class="slider-items">
+
+    <!-- Skeleton Loader -->
+    <ul class="slider-items" *ngIf="isLoading">
+        <li class="slider-item skeleton-card" *ngFor="let item of skeletonItems.slice(0, itemsPerPage)">
+            <div class="skeleton-img shimmer"></div>
+            <div class="skeleton-info">
+                <div class="skeleton-title shimmer"></div>
+                <div class="skeleton-text shimmer"></div>
+                <div class="skeleton-text short shimmer"></div>
+                <div class="skeleton-price shimmer"></div>
+            </div>
+        </li>
+    </ul>
+
+    <!-- Items Reales -->
+    <ul class="slider-items" *ngIf="!isLoading">
         <li class="slider-item" *ngFor="let item of pagedItems">
             <a [routerLink]="'/shop/'+ item.id">
                 <picture class="item-cover">
@@ -19,7 +34,7 @@
         </li>
     </ul>
 
-    <div class="slider-nav">
+    <div class="slider-nav" *ngIf="!isLoading && pages.length > 1">
         <button class="button" (click)="changePage(currentPage - 1)">ANTERIOR</button>
         <button class="button" (click)="changePage(currentPage + 1)">SIGUIENTE</button>
     </div>
