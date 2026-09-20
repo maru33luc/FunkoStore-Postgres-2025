@@ -17,10 +17,10 @@ if (env.NODE_ENV !== 'production') {
             },
         },
         pool: {
-            max: 5,         // Límite seguro por proceso para no agotar el pooler (límite total: 15)
-            min: 0,         // Liberar todas las conexiones inactivas
+            max: 5,         // Límite seguro por proceso para no agotar el pooler
+            min: 1,         // Mantener al menos una conexión activa en el pool
             acquire: 30000, // Tiempo máximo de espera para obtener una conexión
-            idle: 5000,     // Liberar conexión inactiva tras 5 segundos
+            idle: 30000,    // Liberar conexión inactiva tras 30 segundos
             evict: 1000,    // Evaluar conexiones inactivas cada segundo
         },
         logging: false, // Desactiva logs para mantener consola limpia
@@ -45,9 +45,9 @@ if (env.NODE_ENV !== 'production') {
             },
             pool: {
                 max: 5,         // Límite seguro por proceso para no agotar el pooler
-                min: 0,         // Liberar todas las conexiones inactivas
+                min: 1,         // Mantener al menos una conexión activa en el pool
                 acquire: 30000,
-                idle: 5000,
+                idle: 30000,
                 evict: 1000,
             },
             logging: false,

@@ -17,15 +17,10 @@ export class FunkosService {
     private history: Funko[][] = [];
     stockFunkoSubject$ = new BehaviorSubject<number>(0);
     
-    // Observable para cachear la respuesta de getFunkos
-    private funkos$!: Observable<Funko[] | undefined>;
+    private fetchPromise: Promise<Funko[] | undefined> | null = null;
 
     constructor(private orderFunkoService: OrderFunkosService) {
         this.initialize();
-        // Inicializar el observable cacheado
-        this.funkos$ = from(this.getFunkos()).pipe(
-          shareReplay(1) // Cachea la última emisión
-        );
     }
 
     async initialize() {
@@ -52,30 +47,47 @@ export class FunkosService {
         this.stockFunkoSubject$.next(stock);
     }
 
-    async getFunkos(): Promise<Funko[] | undefined> {
-        try {
-            const response = await axios.get(this.url);
-            // El backend devuelve { funkos: rows, total: count } o directamente un array
-            if (response.data && Array.isArray(response.data.funkos)) {
-                return response.data.funkos;
-            }
-            if (Array.isArray(response.data)) {
-                return response.data;
-            }
-            return [];
+    async getFunkos(forceRefresh: boolean = false): Promise<Funko[] | undefined> {
+        if (!forceRefresh && this.funkos && this.funkos.length > 0) {
+            return this.funkos;
         }
-        catch (e) {
-            console.log(e);
+
+        if (!forceRefresh && this.fetchPromise) {
+            return this.fetchPromise;
         }
-        return undefined;
+
+        this.fetchPromise = (async () => {
+            try {
+                const response = await axios.get(this.url);
+                let result: Funko[] = [];
+                if (response.data && Array.isArray(response.data.funkos)) {
+                    result = response.data.funkos;
+                } else if (Array.isArray(response.data)) {
+                    result = response.data;
+                }
+                this.funkos = result;
+                this.filteredFunkos = result;
+                return result;
+            } catch (e) {
+                console.log(e);
+                return undefined;
+            } finally {
+                this.fetchPromise = null;
+            }
+        })();
+
+        return this.fetchPromise;
     }
 
-    // Nuevo método para obtener funkos con caching
     getFunkosCached(): Observable<Funko[] | undefined> {
-      return this.funkos$;
+        return from(this.getFunkos());
     }
 
     async getFunko(id: number | undefined): Promise<Funko | undefined> {
+        if (id !== undefined && this.funkos && this.funkos.length > 0) {
+            const found = this.funkos.find(f => f.id === Number(id));
+            if (found) return found;
+        }
         try {
             const response = await axios.get(`${this.url}/${id}`);
             return response.data;
@@ -137,9 +149,9 @@ export class FunkosService {
 
     // Método para invalidar el cache
     private invalidateFunkosCache() {
-      this.funkos$ = from(this.getFunkos()).pipe(
-        shareReplay(1)
-      );
+        this.funkos = [];
+        this.fetchPromise = null;
+        this.getFunkos(true);
     }
 
     async obtenerStockFunko(id: number | undefined): Promise<number | undefined> {

@@ -3,6 +3,7 @@ const funkoServices = require('../services/funkoServices');
 module.exports = {
     getAllFunkos: async(req, res) => {
         try{
+            res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
             const result = await funkoServices.getAllFunkos(req, res);
             res.json(result);
         }catch(error){
